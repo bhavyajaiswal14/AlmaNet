@@ -5,6 +5,9 @@ import styles from "./page.module.css";
 export default function Home() {
   return (
     <div className={styles.page}>
+    <h1 className="text-5xl font-bold underline text-blue-500">
+      Tailwind set ho gaya bosdiwalo !!!
+    </h1>
       <main className={styles.main}>
         <Image
           className={styles.logo}
