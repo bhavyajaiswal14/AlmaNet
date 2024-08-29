@@ -1,0 +1,127 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String    @unique
+  password_hash String
+  role          UserRole
+  verified      Boolean   @default(false)
+  profile       Profile?
+  eventsCreated Event[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  post Post[]
+  comments Comments[]
+  fundRequest FundRequest[]
+
+  // donations     Donation[]
+}
+
+enum UserRole {
+  STUDENT
+  ALUMNI
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  userId      Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  comments    Comments[]
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement())
+  content   String
+  postId    Int
+  userId    Int
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+}
+
+model Profile {
+  id              Int      @id @default(autoincrement())
+  user            User      @relation(fields: [userId], references: [id])
+  userId          Int    @unique
+  name            String
+  college         College   @relation(fields: [collegeId], references: [id])
+  collegeId       Int
+  passingYear     Int
+  bio             String?   @db.Text
+  contactDetails  Json?
+  githubUrl       String?
+  linkedinUrl     String?
+  imageUrl        String?
+  resumeUrl       String?
+  experiences     Experience[]
+  starRating      Float?    // Only for students, given by alumni
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  profile     Profile  @relation(fields: [profileId], references: [id])
+  profileId   Int
+  company     String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?  @db.Text
+}
+
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  isOnline    Boolean
+  location    String?
+  url         String?
+  date        DateTime
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Create an admin user , to update payment details for each college
+// Monitoring donation needs verification , will later work on it
+// model Donation {
+//  id         Int      @id @default(autoincrement())
+//   amount    Float
+//   cause     String
+//   donor     User     @relation(fields: [donorId], references: [id])
+//   donorId   Int
+//   createdAt DateTime @default(now())
+// }
+
+model FundRequest {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  pptUrl      String
+  upiId       String // sumitbhuia@oksbi
+  userId      Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model College {
+  id      Int      @id @default(autoincrement())
+  name    String    @unique
+  email   String    @unique
+  profiles Profile[]
+}
