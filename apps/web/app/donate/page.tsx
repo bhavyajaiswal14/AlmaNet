@@ -1,12 +1,11 @@
-import Image from "next/image";
-import { Button } from "@repo/ui/button";
+import BankDetail from '../../components/donate/BankDetail';
 
-
-export default function Home() {
+const DonatePage: React.FC = () => {
   return (
-    <div className="text-5xl font-bold underline text-blue-500">
-        Donate page 
- 
+    <div>
+      <BankDetail />
     </div>
   );
-}
+};
+
+export default DonatePage;
