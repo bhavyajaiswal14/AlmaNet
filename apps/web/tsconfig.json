@@ -1,6 +1,14 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
+    "jsx": "preserve",
+    "baseUrl": ".", // Set the base URL for resolving non-relative module names
+    "paths": {
+      "@/*": ["apps/web/*"], // Alias for components, pages, etc.
+      "@/lib/*": ["apps/web/lib/*"], // Alias for lib directory
+      "@/components/*": ["apps/web/components/*"], // Alias for components directory
+      "@/api/*": ["apps/web/api/*"] // Added alias for API routes
+    },
     "plugins": [
       {
         "name": "next"
@@ -14,5 +22,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
